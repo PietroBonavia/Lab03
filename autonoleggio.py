@@ -1,11 +1,39 @@
+class Macchine:
+    def __init__(self, codice, marca, modello, anno, num_posti ):
+        self.codice = codice
+        self.marca = marca
+        self.modello = modello
+        self.anno = anno
+        self.posti = num_posti
+
+
+
 class Autonoleggio:
     def __init__(self, nome, responsabile):
         """Inizializza gli attributi e le strutture dati"""
         # TODO
+        self.nome = nome
+        self.responsabile = responsabile
+        self.macchine = []
+
+
+
+
+
 
     def carica_file_automobili(self, file_path):
         """Carica le auto dal file"""
         # TODO
+        try:
+            with open(file_path, 'r', encoding='utf-8') as file:
+                for riga in file:
+                    campi = riga.strip().split(',')
+                    self.macchine.append(campi)
+
+            return self.macchine
+
+        except FileNotFoundError:
+             print('File non trovato')
 
     def aggiungi_automobile(self, marca, modello, anno, num_posti):
         """Aggiunge un'automobile nell'autonoleggio: aggiunge solo nel sistema e non aggiorna il file"""
