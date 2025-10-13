@@ -1,12 +1,6 @@
-class Macchine:
-    def __init__(self, codice, marca, modello, anno, num_posti ):
-        self.codice = codice
-        self.marca = marca
-        self.modello = modello
-        self.anno = anno
-        self.posti = num_posti
-
-
+from macchine import Automobile
+import operator
+from noleggio import Noleggio
 
 class Autonoleggio:
     def __init__(self, nome, responsabile):
@@ -15,9 +9,7 @@ class Autonoleggio:
         self.nome = nome
         self.responsabile = responsabile
         self.macchine = []
-
-
-
+        self.noleggi = []
 
 
 
@@ -28,7 +20,13 @@ class Autonoleggio:
             with open(file_path, 'r', encoding='utf-8') as file:
                 for riga in file:
                     campi = riga.strip().split(',')
-                    self.macchine.append(campi)
+                    codice = campi[0]
+                    marca = campi[1]
+                    modello = campi[2]
+                    anno = int(campi[3])
+                    posti = int(campi[4])
+                    auto = Automobile(codice, marca, modello, anno, posti)
+                    self.macchine.append(auto)
 
             return self.macchine
 
@@ -38,16 +36,39 @@ class Autonoleggio:
     def aggiungi_automobile(self, marca, modello, anno, num_posti):
         """Aggiunge un'automobile nell'autonoleggio: aggiunge solo nel sistema e non aggiorna il file"""
         # TODO
+        nuovo_codice = f'A{len(self.macchine) + 1}'
+        nuova_auto = Automobile(nuovo_codice, marca, modello, anno, num_posti)
+        self.macchine.append(nuova_auto)
+        return nuova_auto
 
     def automobili_ordinate_per_marca(self):
         """Ordina le automobili per marca in ordine alfabetico"""
         # TODO
+        return sorted(self.macchine, key=operator.attrgetter('marca'))
+
 
     def nuovo_noleggio(self, data, id_automobile, cognome_cliente):
         """Crea un nuovo noleggio"""
         # TODO
+        for auto in self.macchine:
+            if auto.codice == id_automobile:
+                raise Exception('Automobile già noleggiata')
+            auto.noleggiata = True
+            codice_noleggio = f'N{len(self.noleggi) + 1}'
+            noleggio = Noleggio(codice_noleggio, data, auto, cognome_cliente)
+            self.noleggi.append(noleggio)
+            return noleggio
+        raise Exception('Automobile non trovata')
+
 
 
     def termina_noleggio(self, id_noleggio):
         """Termina un noleggio in atto"""
         # TODO
+
+        for n in self.noleggi:
+            if n.codice == id_noleggio:
+                n.automobile.noleggiata = False
+                self.noleggi.remove(n)
+                return
+        raise Exception('Noleggio non trovato')
