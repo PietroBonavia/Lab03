@@ -6,3 +6,6 @@ class Automobile:
         self.anno = anno
         self.posti = num_posti
         self.noleggiata = False
+
+    def __str__(self):
+        return f"{self.codice} {self.marca} {self.modello} {self.anno} {self.posti}"
